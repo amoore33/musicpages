@@ -1,0 +1,22 @@
+@font-face {
+    font-family: "Century Schoolbook";
+    src: local("Century Schoolbook"), url("CENSCBK.TTF");
+    font-weight: 400;
+}
+@font-face {
+    font-family: "Century Schoolbook";
+    src: local("Century Schoolbook Italic"), url("SCHLBKI.TTF");
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Century Schoolbook";
+    src: local("Century Schoolbook Bold"), url("SCHLBKB.TTF");
+    font-weight: 700;
+}
+@font-face {
+    font-family: "Century Schoolbook";
+    src: local("Century Schoolbook Bold Italic"), url("SCHLBKBI.TTF");
+    font-weight: 700;
+    font-style: italic;
+}

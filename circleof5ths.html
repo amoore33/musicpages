@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>circle of fifths</title>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap");
+            @import url("CenturySchoolbook.css");
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            body, input, button {
+                font-family: "Montserrat", sans-serif;
+            }
+            input[type=text], button {
+                font-size: 1em;
+                padding: 5px;
+                margin-bottom: 5px;
+            }
+            svg {
+                background-color: none;
+                width: 500px;
+                display: block;
+            }
+            text {
+                text-anchor: middle;
+                dominant-baseline: middle;
+                font-family: "Century Schoolbook", serif;
+                font-weight: 700;
+            }
+            #circle {
+                fill: none;
+                stroke: #eeeeee;
+                stroke-width: 3px;
+            }
+            #major {
+                fill: #333333;
+                font-size: 48px;
+            }
+            #minor {
+                fill: #333333;
+                font-size: 24px;
+            }
+            #numbers {
+                fill: #333333;
+                font-size: 32px;
+            }
+            #connector {
+                fill: none;
+                stroke: #ff0000;
+                stroke-width: 0;
+            }
+
+            #rotation {
+                width: 500px;
+                height: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <button id="spinstart">speen</button>
+        <button id="spinstop">no speen</button><br/>
+        <input type="range" id="rotation" name="rotation" min="0" max="360" value="0"/>
+        <svg id="svg" version="1.1" viewBox="-350 -350 700 700" xmlns="http://www.w3.org/2000/svg">
+            <g id="main">
+                <circle cx="0" cy="0" r="250" id="circle"/>
+                <path id="connector"/>
+                <g id="major">
+                    <text x="0" y="-300" transform="rotate(0)">C</text>
+                    <text x="0" y="-300" transform="rotate(30)">G</text>
+                    <text x="0" y="-300" transform="rotate(60)">D</text>
+                    <text x="0" y="-300" transform="rotate(90)">A</text>
+                    <text x="0" y="-300" transform="rotate(120)">E</text>
+                    <text x="0" y="-300" transform="rotate(150)">B</text>
+                    <text x="0" y="-300" transform="rotate(180)">F&sharp;/G&flat;</text>
+                    <text x="0" y="-300" transform="rotate(210)">D&flat;</text>
+                    <text x="0" y="-300" transform="rotate(240)">A&flat;</text>
+                    <text x="0" y="-300" transform="rotate(270)">E&flat;</text>
+                    <text x="0" y="-300" transform="rotate(300)">B&flat;</text>
+                    <text x="0" y="-300" transform="rotate(330)">F</text>
+                </g>
+                <g id="minor">
+                    <text x="0" y="-200" transform="rotate(0)">a</text>
+                    <text x="0" y="-200" transform="rotate(30)">e</text>
+                    <text x="0" y="-200" transform="rotate(60)">b</text>
+                    <text x="0" y="-200" transform="rotate(90)">f&sharp;</text>
+                    <text x="0" y="-200" transform="rotate(120)">c&sharp;</text>
+                    <text x="0" y="-200" transform="rotate(150)">g&sharp;</text>
+                    <text x="0" y="-200" transform="rotate(180)">d&sharp;/e&flat;</text>
+                    <text x="0" y="-200" transform="rotate(210)">b&flat;</text>
+                    <text x="0" y="-200" transform="rotate(240)">f</text>
+                    <text x="0" y="-200" transform="rotate(270)">c</text>
+                    <text x="0" y="-200" transform="rotate(300)">g</text>
+                    <text x="0" y="-200" transform="rotate(330)">d</text>
+                </g>
+                <g id="numbers">
+                    <text x="0" y="-250" transform="rotate(0)">&pm;0</text>
+                    <text x="0" y="-250" transform="rotate(30)">+1</text>
+                    <text x="0" y="-250" transform="rotate(60)">+2</text>
+                    <text x="0" y="-250" transform="rotate(90)">+3</text>
+                    <text x="0" y="-250" transform="rotate(120)">+4</text>
+                    <text x="0" y="-250" transform="rotate(150)">+5/-7</text>
+                    <text x="0" y="-250" transform="rotate(180)">&pm;6</text>
+                    <text x="0" y="-250" transform="rotate(210)">-5/+7</text>
+                    <text x="0" y="-250" transform="rotate(240)">-4</text>
+                    <text x="0" y="-250" transform="rotate(270)">-3</text>
+                    <text x="0" y="-250" transform="rotate(300)">-2</text>
+                    <text x="0" y="-250" transform="rotate(330)">-1</text>
+                </g>
+            </g>
+        </svg>
+        <input type="text" id="start" placeholder="starting point (-7 to 7)"/><br/>
+        <input type="text" id="interval" placeholder="interval (semitones)"/><br/>
+        <button id="btn">toggle</button>
+        <p>sample <i>text</i> <b>goes</b> <b><i>here</i></b></p>
+
+        <script>
+            let connectorWidth = "3px";
+            function getConnector(start, n) {
+                let theta = 1.5 * Math.PI + start * Math.PI / 6;
+                let d = `M ${Math.cos(theta) * 250},${Math.sin(theta) * 250}`;
+                for (let i = 1; i < 12; i++) {
+                    theta += n * Math.PI / 6;
+                    let x = Math.cos(theta) * 250;
+                    let y = Math.sin(theta) * 250;
+                    d += ` L ${x},${y}`;
+                }
+                d += " z";
+                return d;
+            }
+
+            function start() {
+                return parseInt(document.querySelector("#start").value);
+            }
+            function interval() {
+                return parseInt(document.querySelector("#interval").value);
+            }
+
+            let connector = document.querySelector("#connector");
+
+            const converter = [0, -5, 2, -3, 4, -1, 6, 1, -4, 3, -2, 5];
+
+            document.querySelector("#spinstart").addEventListener("click", function() {
+                document.querySelector("#svg").style.animation = "spin 12s linear infinite";
+            });
+            document.querySelector("#spinstop").addEventListener("click", function() {
+                document.querySelector("#svg").style.animation = "";
+            });
+            document.querySelector("#btn").addEventListener("click", function() {
+                connector.setAttribute("d", getConnector(start(), converter[interval() % 12]));
+                connector.style.strokeWidth = (connector.style.strokeWidth === connectorWidth) ? "0" : connectorWidth;
+            });
+            document.querySelector("#rotation").addEventListener("input", function() {
+                let rotation = document.querySelector("#rotation").value;
+                document.querySelector("#svg").style.transform = `rotate(${rotation}deg)`;
+            });
+        </script>
+    </body>
+</html>
